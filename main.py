@@ -34,7 +34,7 @@ R_LOSS_FACTOR = 100000  # 10000
 EPOCHS        = 300
 INITIAL_EPOCH = 0
 
-filenames  = np.array(glob(os.path.join(DATA_FOLDER, 'cat.*.jpg')))
+filenames  = np.array(glob(os.path.join(DATA_FOLDER, '*.*.jpg')))
 n_images        = filenames.shape[0]
 steps_per_epoch = n_images//BATCH_SIZE
 
@@ -53,11 +53,27 @@ dataset = dataset.prefetch(buffer_size=AUTOTUNE)
 normalization_layer = tf.keras.layers.experimental.preprocessing.Rescaling(1./255)
 dataset = dataset.map(lambda x: (normalization_layer(x)), num_parallel_calls=AUTOTUNE)
 
+train_files = np.array(glob(os.path.join(DATA_FOLDER, '*.*.jpg')))
+def read_and_decode(file):
+    img = tf.io.read_file(file)
+    img = tf.image.decode_jpeg(img)
+    img = tf.cast(img, tf.float32)
+    img = img / 255.0
+    img = tf.image.resize(img, INPUT_DIM[:2], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+    return img
+def load_image(file1):
+    return read_and_decode(file1)
+# Dataset's configuration
+train_dataset = tf.data.Dataset.list_files(train_files, shuffle=False)
+train_dataset = train_dataset.shuffle(buffer_size=n_images, reshuffle_each_iteration=True)
+train_dataset = train_dataset.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
+train_dataset = train_dataset.batch(BATCH_SIZE).repeat()
+
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(12, 6), tight_layout=True)
 
-for images in dataset.take(1):
+for images in train_dataset.take(1):
     for i in range(18):
         ax = plt.subplot(3, 6, i + 1)
         plt.imshow(images[i].numpy())
@@ -366,7 +382,7 @@ checkpoint = ModelCheckpoint(filepath=filepath,
 terminate = TerminateOnNaN()
 callbacks = [checkpoint, terminate]
 
-vae.fit(dataset,
+vae.fit(train_dataset,
         batch_size      = BATCH_SIZE,
         epochs          = EPOCHS,
         initial_epoch   = INITIAL_EPOCH,
