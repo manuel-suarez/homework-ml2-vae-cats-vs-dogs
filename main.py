@@ -26,7 +26,7 @@ mode =  'build' #'load' #
 
 # run params
 # DATA_FOLDER   = '/home/mariano/Data/celebA/imgs_align/img_align_celeba_png'
-DATA_FOLDER   = '/home/est_posgrado_manuel.suarez/data/img_align_celeba'
+DATA_FOLDER   = '/home/est_posgrado_manuel.suarez/data/dogs-vs-cats/train'
 INPUT_DIM     = (128,128,3)
 LATENT_DIM    = 150
 BATCH_SIZE    = 384
