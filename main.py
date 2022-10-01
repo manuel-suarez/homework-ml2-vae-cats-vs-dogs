@@ -31,7 +31,7 @@ INPUT_DIM     = (128,128,3)
 LATENT_DIM    = 150
 BATCH_SIZE    = 384
 R_LOSS_FACTOR = 100000  # 10000
-EPOCHS        = 200
+EPOCHS        = 300
 INITIAL_EPOCH = 0
 
 filenames  = np.array(glob(os.path.join(DATA_FOLDER, '*.jpg')))
@@ -355,6 +355,7 @@ vae.summary()
 
 vae.compile(optimizer=keras.optimizers.Adam())
 from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import TerminateOnNaN
 filepath = 'best_weight_model.h5'
 checkpoint = ModelCheckpoint(filepath=filepath,
                              monitor='loss',
@@ -362,7 +363,8 @@ checkpoint = ModelCheckpoint(filepath=filepath,
                              save_best_only=True,
                              save_weights_only=True,
                              mode='min')
-callbacks = [checkpoint]
+terminate = TerminateOnNaN()
+callbacks = [checkpoint, terminate]
 
 vae.fit(dataset,
         batch_size      = BATCH_SIZE,
