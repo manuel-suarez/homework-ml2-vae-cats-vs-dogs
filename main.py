@@ -34,7 +34,7 @@ R_LOSS_FACTOR = 100000  # 10000
 EPOCHS        = 300
 INITIAL_EPOCH = 0
 
-filenames  = np.array(glob(os.path.join(DATA_FOLDER, '*.jpg')))
+filenames  = np.array(glob(os.path.join(DATA_FOLDER, 'cat.*.jpg')))
 n_images        = filenames.shape[0]
 steps_per_epoch = n_images//BATCH_SIZE
 
