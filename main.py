@@ -33,27 +33,13 @@ BATCH_SIZE    = 384
 R_LOSS_FACTOR = 100000  # 10000
 EPOCHS        = 400
 INITIAL_EPOCH = 0
-
-filenames  = np.array(glob(os.path.join(DATA_FOLDER, '*.*.jpg')))
-n_images        = filenames.shape[0]
+AUTOTUNE = tf.data.AUTOTUNE
+train_files = np.array(glob(os.path.join(DATA_FOLDER, 'cat.*.jpg')))
+n_images        = train_files.shape[0]
 steps_per_epoch = n_images//BATCH_SIZE
-
 print('num image files : ', n_images)
 print('steps per epoch : ', steps_per_epoch )
 
-AUTOTUNE = tf.data.AUTOTUNE
-dataset=tf.keras.utils.image_dataset_from_directory(directory  = DATA_FOLDER,
-                                                    labels     = None,
-                                                    batch_size = BATCH_SIZE,
-                                                    image_size = INPUT_DIM[:2],
-                                                    shuffle    = True,).repeat()
-
-dataset = dataset.prefetch(buffer_size=AUTOTUNE)
-
-normalization_layer = tf.keras.layers.experimental.preprocessing.Rescaling(1./255)
-dataset = dataset.map(lambda x: (normalization_layer(x)), num_parallel_calls=AUTOTUNE)
-
-train_files = np.array(glob(os.path.join(DATA_FOLDER, '*.*.jpg')))
 def read_and_decode(file):
     img = tf.io.read_file(file)
     img = tf.image.decode_jpeg(img)
