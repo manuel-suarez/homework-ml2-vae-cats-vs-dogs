@@ -31,7 +31,7 @@ INPUT_DIM     = (128,128,3)
 LATENT_DIM    = 150
 BATCH_SIZE    = 384
 R_LOSS_FACTOR = 100000  # 10000
-EPOCHS        = 400
+EPOCHS        = 200
 INITIAL_EPOCH = 0
 
 filenames  = np.array(glob(os.path.join(DATA_FOLDER, '*.jpg')))
