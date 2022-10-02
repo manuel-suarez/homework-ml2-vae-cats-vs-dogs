@@ -70,7 +70,7 @@ for images1, images2 in train_dataset.take(1):
 
 plt.savefig("figura1.png")
 
-print(images.shape)
+print(images1.shape)
 
 from tensorflow import keras
 import tensorflow.keras.layers as layers
