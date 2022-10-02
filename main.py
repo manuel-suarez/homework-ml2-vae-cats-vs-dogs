@@ -62,10 +62,10 @@ import matplotlib.pyplot as plt
 
 plt.figure(figsize=(12, 6), tight_layout=True)
 
-for images in train_dataset.take(1):
+for images1, images2 in train_dataset.take(1):
     for i in range(18):
         ax = plt.subplot(3, 6, i + 1)
-        plt.imshow(images[i].numpy())
+        plt.imshow(images1[i].numpy())
         plt.axis('off')
 
 plt.savefig("figura1.png")
