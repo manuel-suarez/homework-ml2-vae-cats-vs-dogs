@@ -412,12 +412,12 @@ def plot_latent_space(vae, input_size=(28,28,1), n=30, figsize=15,  scale=1., la
 
 
 plot_latent_space(vae2, input_size=INPUT_DIM, n = 6, latents_start=[20,30], scale=3)
-images = dataset.take(4)
+images = train_dataset.take(4)
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(12, 6), tight_layout=True)
 
-for images in dataset.take(1):
+for images in train_dataset.take(1):
     for i in range(18):
         ax = plt.subplot(3, 6, i + 1)
         plt.imshow(images[i].numpy())
@@ -450,7 +450,7 @@ def plot_warping(z1, z2, n=(1, 5)):
 
 plot_warping(z1=z_mean[46], z2=z_mean[60], n=(3, 5))
 for i in range(5):
-    images = dataset.take(1)
+    images = train_dataset.take(1)
     x = vae2.encoder_model.predict(images)
     _, z_mean, _ = vae2.sampler_model(x)
     if i:
