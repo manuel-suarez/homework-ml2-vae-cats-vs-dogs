@@ -34,8 +34,9 @@ R_LOSS_FACTOR = 100000  # 10000
 EPOCHS        = 400
 INITIAL_EPOCH = 0
 AUTOTUNE = tf.data.AUTOTUNE
-train_files = np.array(glob(os.path.join(DATA_FOLDER, 'dog.*.jpg')))
-n_images        = train_files.shape[0]
+dog_files = np.array(glob(os.path.join(DATA_FOLDER, 'dog.*.jpg')))
+cat_files = np.array(glob(os.path.join(DATA_FOLDER, 'cat.*.jpg')))
+n_images        = dog_files.shape[0]
 steps_per_epoch = n_images//BATCH_SIZE
 print('num image files : ', n_images)
 print('steps per epoch : ', steps_per_epoch )
@@ -47,10 +48,12 @@ def read_and_decode(file):
     img = img / 255.0
     img = tf.image.resize(img, INPUT_DIM[:2], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
     return img
-def load_image(file1):
-    return read_and_decode(file1)
+def load_image(file1, file2):
+    return read_and_decode(file1), read_and_decode(file2)
 # Dataset's configuration
-train_dataset = tf.data.Dataset.list_files(train_files, shuffle=False)
+dog_dataset = tf.data.Dataset.list_files(dog_files, shuffle=False)
+cat_dataset = tf.data.Dataset.list_files(cat_files, shuffle=False)
+train_dataset = tf.data.Dataset.zip(dog_dataset, cat_dataset)
 train_dataset = train_dataset.shuffle(buffer_size=n_images, reshuffle_each_iteration=True)
 train_dataset = train_dataset.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
 train_dataset = train_dataset.batch(BATCH_SIZE).repeat()
@@ -291,16 +294,16 @@ class VAE(keras.Model):
 
     @tf.function
     def train_step(self, data):
-        '''
-        '''
+        dog_img = data[0]
+        cat_img = data[1]
         with tf.GradientTape() as tape:
             # predict
-            x = self.encoder_model(data)
+            x = self.encoder_model(dog_img)
             z, z_mean, z_log_var = self.sampler_model(x)
             pred = self.decoder_model(z)
 
             # loss
-            r_loss = self.r_loss_factor * self.mae(data, pred)
+            r_loss = self.r_loss_factor * self.mae(cat_img, pred)
             kl_loss = -0.5 * (1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var))
             kl_loss = tf.reduce_mean(tf.reduce_sum(kl_loss, axis=1))
             total_loss = r_loss + kl_loss
