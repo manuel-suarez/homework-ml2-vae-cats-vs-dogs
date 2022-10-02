@@ -31,7 +31,7 @@ INPUT_DIM     = (128,128,3)
 LATENT_DIM    = 150
 BATCH_SIZE    = 384
 R_LOSS_FACTOR = 100000  # 10000
-EPOCHS        = 400
+EPOCHS        = 50
 INITIAL_EPOCH = 0
 AUTOTUNE = tf.data.AUTOTUNE
 dog_files = np.array(glob(os.path.join(DATA_FOLDER, 'dog.*.jpg')))
@@ -424,17 +424,22 @@ images = train_dataset.take(4)
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(12, 6), tight_layout=True)
-
-for images in train_dataset.take(1):
+for images1,_ in train_dataset.take(1):
     for i in range(18):
         ax = plt.subplot(3, 6, i + 1)
-        plt.imshow(images[i].numpy())
+        plt.imshow(images1[i].numpy())
         plt.axis('off')
-
+plt.savefig("figura3a.png")
+plt.figure(figsize=(12, 6), tight_layout=True)
+for _,images2 in train_dataset.take(1):
+    for i in range(18):
+        ax = plt.subplot(3, 6, i + 1)
+        plt.imshow(images2[i].numpy())
+        plt.axis('off')
 plt.savefig("figura3.png")
 
-print(images.shape)
-x = vae2.encoder_model.predict(images)
+print(images1.shape)
+x = vae2.encoder_model.predict(images1)
 z, z_mean, z_log_var= vae2.sampler_model(x)
 
 
