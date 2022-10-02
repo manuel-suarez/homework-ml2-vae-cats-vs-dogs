@@ -53,7 +53,7 @@ def load_image(file1, file2):
 # Dataset's configuration
 dog_dataset = tf.data.Dataset.list_files(dog_files, shuffle=False)
 cat_dataset = tf.data.Dataset.list_files(cat_files, shuffle=False)
-train_dataset = tf.data.Dataset.zip(dog_dataset, cat_dataset)
+train_dataset = tf.data.Dataset.zip((dog_dataset, cat_dataset))
 train_dataset = train_dataset.shuffle(buffer_size=n_images, reshuffle_each_iteration=True)
 train_dataset = train_dataset.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
 train_dataset = train_dataset.batch(BATCH_SIZE).repeat()
