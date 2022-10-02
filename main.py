@@ -34,7 +34,7 @@ R_LOSS_FACTOR = 100000  # 10000
 EPOCHS        = 400
 INITIAL_EPOCH = 0
 AUTOTUNE = tf.data.AUTOTUNE
-train_files = np.array(glob(os.path.join(DATA_FOLDER, 'cat.*.jpg')))
+train_files = np.array(glob(os.path.join(DATA_FOLDER, 'dog.*.jpg')))
 n_images        = train_files.shape[0]
 steps_per_epoch = n_images//BATCH_SIZE
 print('num image files : ', n_images)
