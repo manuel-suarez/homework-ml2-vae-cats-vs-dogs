@@ -377,10 +377,10 @@ terminate = TerminateOnNaN()
 callbacks = [checkpoint, terminate]
 
 vae.fit(train_dataset,
-        batch_size      = BATCH_SIZE,
+        # batch_size      = BATCH_SIZE,
         epochs          = EPOCHS,
-        initial_epoch   = INITIAL_EPOCH,
-        steps_per_epoch = steps_per_epoch,
+        # initial_epoch   = INITIAL_EPOCH,
+        # steps_per_epoch = steps_per_epoch,
         callbacks       = callbacks)
 vae.save_weights("model_vae_faces_1e4.h5")
 vae2 = VAE(r_loss_factor=R_LOSS_FACTOR)
