@@ -27,7 +27,7 @@ mode =  'build' #'load' #
 # run params
 # DATA_FOLDER   = '/home/mariano/Data/celebA/imgs_align/img_align_celeba_png'
 DATA_FOLDER   = '/home/est_posgrado_manuel.suarez/data/dogs-vs-cats/train'
-INPUT_DIM     = (128,128,3)
+INPUT_DIM     = (256,256,3)
 LATENT_DIM    = 150
 BATCH_SIZE    = 384
 R_LOSS_FACTOR = 100000  # 10000
@@ -36,7 +36,7 @@ INITIAL_EPOCH = 0
 AUTOTUNE = tf.data.AUTOTUNE
 dog_files = np.array(glob(os.path.join(DATA_FOLDER, 'dog.*.jpg')))
 cat_files = np.array(glob(os.path.join(DATA_FOLDER, 'cat.*.jpg')))
-n_images        = dog_files.shape[0]
+n_images        = len(dog_files)
 steps_per_epoch = n_images//BATCH_SIZE
 print('num image files : ', n_images)
 print('steps per epoch : ', steps_per_epoch )
@@ -377,7 +377,7 @@ terminate = TerminateOnNaN()
 callbacks = [checkpoint, terminate]
 
 vae.fit(train_dataset,
-        # batch_size      = BATCH_SIZE,
+        batch_size      = BATCH_SIZE,
         epochs          = EPOCHS,
         # initial_epoch   = INITIAL_EPOCH,
         # steps_per_epoch = steps_per_epoch,
